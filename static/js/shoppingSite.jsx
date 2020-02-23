@@ -9,6 +9,12 @@ class App extends React.Component {
     this.renderAllMelonsPage = this.renderAllMelonsPage.bind(this);
   }
 
+  componentDidMount() {
+    $.get("/api/melons", (res) => {
+      this.setState({melons: res});
+    });
+  }
+
   renderHomePage() {
     return (
       <HomePage>
@@ -24,11 +30,11 @@ class App extends React.Component {
     for (const melon of Object.values(this.state.melons)) {
       const melonCard = (
         <MelonCard
-          key="cren"
-          code="cren"
-          name="Crenshaw"
-          imgUrl="http://www.rareseeds.com/assets/1/14/DimRegular/crenshaw.jpg"
-          price={2}
+          key={melon.melon_code}
+          code={melon.melon_code}
+          name={melon.name}
+          imgUrl={melon.image_url}
+          price={melon.price}
         />
       );
 
