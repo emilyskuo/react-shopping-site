@@ -30,11 +30,6 @@ class App extends React.Component {
     const melonCards = [];
 
     for (const melon of Object.values(this.state.melons)) {
-      // const addMelonHandler = (melon) => {
-      //   this.addMelonToCart(melon);
-      //   console.log(melon);
-      //   console.log(melon.melon_code);
-      // };
       const melonCard = (
         <MelonCard
           key={melon.melon_code}
