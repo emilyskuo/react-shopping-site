@@ -3,10 +3,12 @@ class App extends React.Component {
     super();
 
     this.state = {
-      melons: {}
+      melons: {},
+      shoppingCart: {}
     };
 
     this.renderAllMelonsPage = this.renderAllMelonsPage.bind(this);
+    this.renderShoppingCart = this.renderShoppingCart.bind(this);
   }
 
   componentDidMount() {
@@ -28,6 +30,11 @@ class App extends React.Component {
     const melonCards = [];
 
     for (const melon of Object.values(this.state.melons)) {
+      // const addMelonHandler = (melon) => {
+      //   this.addMelonToCart(melon);
+      //   console.log(melon);
+      //   console.log(melon.melon_code);
+      // };
       const melonCard = (
         <MelonCard
           key={melon.melon_code}
@@ -35,6 +42,9 @@ class App extends React.Component {
           name={melon.name}
           imgUrl={melon.image_url}
           price={melon.price}
+          handleAddToCart={() => {
+            this.addMelonToCart(melon);
+          }}
         />
       );
 
@@ -49,6 +59,26 @@ class App extends React.Component {
   }
 
   renderShoppingCart() {
+
+    const melons = this.state.melons;
+    const shoppingCart = this.state.shoppingCart;
+
+    const melonRows = [];
+    let total = 0;
+    for (const [ melonCode, qty ] of Object.entries(shoppingCart)) {
+      const melon = melons[melonCode];
+
+      const row = (
+        <tr>
+          <td>{melon.name}</td>
+          <td>{qty}</td>
+          <td>${melon.price.toFixed(2)}</td>
+        </tr>
+      );
+      melonRows.push(row);
+
+      total += melon.price * qty;
+    }
     return (
       <ShoppingCartPage>
         <table className="table">
@@ -60,11 +90,24 @@ class App extends React.Component {
             </tr>
           </thead>
           <tbody>
+            {melonRows}
           </tbody>
         </table>
-        <p className="lead">Total: ${(0).toFixed(2)}</p>
+        <p className="lead">Total: ${total.toFixed(2)}</p>
       </ShoppingCartPage>
     );
+  }
+
+  addMelonToCart(melon) {
+    this.setState( (prevState) => {
+      const newShoppingCart = Object.assign({}, prevState.shoppingCart);
+        if (newShoppingCart[melon.melon_code]) {
+          newShoppingCart[melon.melon_code] += 1;
+        } else {
+          newShoppingCart[melon.melon_code] = 1;
+        }
+      return {shoppingCart: newShoppingCart}
+    })
   }
 
   render() {
